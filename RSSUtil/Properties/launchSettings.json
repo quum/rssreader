@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "RSSUtil": {
+      "commandName": "Project",
+      "commandLineArgs": "-d rssdb  -s"
+    }
+  }
+}

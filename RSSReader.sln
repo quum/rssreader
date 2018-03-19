@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RSSReader", "RSSReader\RSSReader.csproj", "{857C9D12-87E5-4606-8263-3194BE93A3E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSUtil", "RSSUtil\RSSUtil.csproj", "{F51BE22C-5E64-44B5-B61B-9802A13E2300}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RSSLib", "RSSLib\RSSLib.csproj", "{CBE95630-B95F-43D5-A415-7C99B1D20BC7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{857C9D12-87E5-4606-8263-3194BE93A3E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{857C9D12-87E5-4606-8263-3194BE93A3E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{857C9D12-87E5-4606-8263-3194BE93A3E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{857C9D12-87E5-4606-8263-3194BE93A3E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F51BE22C-5E64-44B5-B61B-9802A13E2300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F51BE22C-5E64-44B5-B61B-9802A13E2300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F51BE22C-5E64-44B5-B61B-9802A13E2300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F51BE22C-5E64-44B5-B61B-9802A13E2300}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE95630-B95F-43D5-A415-7C99B1D20BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE95630-B95F-43D5-A415-7C99B1D20BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE95630-B95F-43D5-A415-7C99B1D20BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE95630-B95F-43D5-A415-7C99B1D20BC7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2610BE2D-8995-414B-BB41-8157AAC19184}
+	EndGlobalSection
+EndGlobal

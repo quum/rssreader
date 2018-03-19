@@ -1,0 +1,372 @@
+﻿@page
+@model IndexModel
+@Html.AntiForgeryToken() 
+@{
+    
+}
+
+@section scripts
+{
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (Model.Feeds.Count() > 0)
+        {
+            @:selectFeed(@Model.Feeds.First().Id);
+
+        }
+
+        $('#addUrl').on('blur', function () {
+            var url = $('#addUrl').val();
+            if (isUrlValid(url) || url == "") {
+                $('#addUrl').css('background-color', 'white');
+                $('#addUrl').css('color', 'black');
+
+
+            }
+            else {
+                $('#addUrl').css('background-color', 'red');
+                $('#addUrl').css('color', 'white');
+            }
+
+        });
+
+        $('#addUrl').on('propertychange input', function () {
+            var url = $('#addUrl').val();
+            if (url == "") {
+                $('#addUrl').css('background-color', 'white');
+                $('#addUrl').css('color', 'black');
+            }
+        });
+    });
+
+    function feedCollapse() {
+        $('#feedCollapse').css('display', 'none');
+        $('#feedExpand').css('display', 'inline');
+        $('#divFeeds').css('max-width', '0px');
+        $('#divFeeds').css('min-width', '0px');
+    }
+
+    function feedExpand() {
+        $('#feedExpand').css('display', 'none');
+        $('#feedCollapse').css('display', 'inline');
+        $('#divFeeds').css('max-width', '300px');
+        $('#divFeeds').css('min-width', '300px');
+    }
+
+    function addFeed() {
+        var url = $('#addUrl').val();
+        if (isUrlValid(url)) {
+            $.ajax({
+                type: "POST",
+                url: '/?handler=addFeed&url=' + url,
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+                    selectFeed(response.id);
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+        }
+    }
+
+    function markAsRead(div, id)
+    {
+        $(div).css('font-weight', 'normal');
+
+        $.ajax({
+            type: "POST",
+            url: '/?handler=markArticleAsRead&id=' + id,
+            headers:
+            {
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+
+    }
+
+    function showOrHide(id)
+    {
+        if ($('#' + id).css('display') == 'none')
+        {
+            $('#' + id).css('display', 'block');
+
+        }
+        else {
+            $('#' + id).css('display', 'none');
+
+        }
+    }
+
+    function getSelectedFeed()
+    {
+        return $('#selectedFeedId').val();
+    }
+
+    function editSelectedFeedName()
+    {
+        var id = '#feed' + getSelectedFeed();
+        $('#newFeedName').val($(id).text().trim());
+        $('#spanDisplayTitle').css('display', 'none');
+        $('#spanEditTitle').css('display', 'inline');        
+    }
+
+    function saveNewFeedName()
+    {
+        var feedId = getSelectedFeed();
+        var newname = $('#newFeedName').val().trim();
+        if (newname.length > 1) {
+
+            var id = '#feed' + feedId;
+            $(id).text(newname);
+            $('#spanTitle').text(newname);
+
+            $.ajax({
+                type: "POST",               
+                url: '/?handler=editFeed&id=' + feedId + '&name=' + newname,
+                headers:
+                {
+                    "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                contentType: "application/json",
+                dataType: "json",
+                success: function (response) {
+                    selectFeed(feedId);
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+        }
+        cancelFeedNameEdit();
+     
+    }
+
+    function cancelFeedNameEdit()
+    { 
+        $('#spanDisplayTitle').css('display', 'inline');
+        $('#spanEditTitle').css('display', 'none');        
+    }
+
+
+    function markSelectedFeedRead()
+    {
+        $.ajax({
+            type: "POST",
+            url: '/?handler=markFeedAsRead&feedId=' + getSelectedFeed(),
+            headers:
+            {
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+
+            success: function (response) {
+                $("div[id^='article']").css('font-weight', 'normal');
+                var feed = "#feed" + getSelectedFeed();
+                $(feed).css('font-weight', 'normal');
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+
+    }
+
+    function deleteSelectedFeed()
+    {
+        $.ajax({
+            type: "POST",
+            url: '/?handler=deleteFeed&feedId=' + getSelectedFeed(),
+            headers:
+            {
+                "RequestVerificationToken": $('input:hidden[name="__RequestVerificationToken"]').val()
+            },
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                location.href = location.href;
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+
+    }
+
+    function selectFeed(feedId)
+    {
+        $('#selectedFeedId').val(feedId);
+
+        $.ajax({
+            type: "GET",
+            url: '/?handler=feed&feedId=' + feedId,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                $('#spanTitle').text(response.title);
+                $('#feedLink').attr('href', response.htmlUrl);
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '/?handler=articles&feedId=' + feedId,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                $('#tblArticles tr').remove();
+
+                $.each(response, function (i, item) {
+
+                    var contentId = 'article' + item.id;
+                    
+                    var font = 'font-weight: bold';
+                    if (item.read) font = 'font-weight: normal';
+                    var text = '<div id="articlehead' + item.id +'" style="cursor:pointer;' + font + '"onclick="markAsRead(this,' + item.id + ');  showOrHide(\'' + contentId + '\');' + '">';
+                    text += item.title;
+                    text += "&nbsp;";
+                    text += '<a href="' + item.link + '" target="_blank">';
+                    text += '<span class="glyphicon glyphicon-share-alt"></span>';
+                    text += "</a>"
+                    text += "</div>";
+                    text += '<div style="display:none" id="' + contentId + '"> ';
+                    if (item.content > '') {
+                        text += item.content;
+                    }
+                    text +=  '</div>';
+                    $('#tblArticles').append('<tr><td>' + text + "</td></tr>");                  
+                });
+            },
+            failure: function (response) {
+                alert(response);
+            }
+        });
+
+        
+    }
+</script>
+
+}
+
+<div>
+    <input type="hidden" id="selectedFeedId" />
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input id="addUrl" type="url" class="form-control" style="width: 500px" placeholder="Feed Url" required>
+                    </div>
+                    <button type="submit" onclick="addFeed();" class="btn btn-default">Add Feed</button>
+                </div>
+              
+            </div>
+        </div>
+    </nav> 
+    <div style="display: flex">
+        
+        <div id="divFeeds" style="max-width: 300px; min-width: 300px; max-height: 100vh; overflow-y: scroll">
+            <div class="panel panel-default">
+                <div id="divFeedHeader" class="panel-heading">
+                    RSSReader
+                                
+                </div>
+                <div class="panel-body">
+                    @foreach (var item in Model.Feeds)
+                    {
+                        <ul class="nav">                    
+                            <li>                         
+                                @{
+                                    var font = "font-weight: normal";
+                                    var id = "feed" + item.Id.ToString();
+                                }
+                                @if (Model.FeedsWithNew.Contains(item.Id))
+                                {
+                                    font = "font-weight: bold";
+                                }
+                                <a style="cursor: pointer; @font" id="@id" onclick="selectFeed(@item.Id); return false;" >                                                                   
+                                @item.Title
+                        
+                                @if (item.Error != 0)
+                                {
+                                    <span class="glyphicon glyphicon-alert"></span>
+                                }
+                                </a>
+                            </li>                     
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div id="divArticles" style="flex-grow:1; max-height: 100vh; overflow-y: scroll; padding: 2px">                      
+            <div class="panel panel-default">
+                <div id="divArticleHeader" class="panel-heading">
+                        
+                    <span id="spanEditTitle" style="display:none">
+                        <input id="newFeedName" type="text" maxlength="50"   class="form-control" style="display:inline; width: 500px" placeholder="New Feed Name" required>
+                        <button type="submit" onclick="saveNewFeedName();" class="btn btn-default">Save</button>
+                        <button type="submit" onclick="cancelFeedNameEdit();" class="btn btn-default">Cancel</button>
+                    </span>
+
+                    <span id="spanDisplayTitle">
+                        &nbsp;&nbsp;
+                        <a id="feedCollapse" onclick="feedCollapse(); return false;">
+                            <span class="glyphicon glyphicon-chevron-left">
+                            </span>
+                        </a>     
+                        <a id="feedExpand" onclick="feedExpand(); return false;" style="display:none">
+                            <span class="glyphicon glyphicon-chevron-right">
+                            </span>
+                        </a>
+                        &nbsp;
+                        <span id="spanTitle">
+
+                        </span>
+                        &nbsp;
+                        <a href="#" id="feedLink" target="_blank" data-toggle="tooltip" title="Open Blog">
+                            <span class="glyphicon glyphicon-share-alt"></span>
+                        </a>
+                        &nbsp;
+                        <a href="#" style="cursor:pointer" data-toggle="tooltip" title="Mark All As Read" onclick="markSelectedFeedRead(); return false;">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </a>
+                        &nbsp;
+                        <a href="#" style="cursor:pointer" data-toggle="tooltip" title="Edit Name" onclick="editSelectedFeedName(); return false;">
+                            <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                        &nbsp;
+                        <span class="navbar-right">
+                            <a href="#" style="cursor:pointer" data-toggle="tooltip" title="Delete this Blog" onclick="deleteSelectedFeed(); return false;">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                            &nbsp;&nbsp;
+                        </span>
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <table id="tblArticles" class="table">
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+          
+        </div>
+    </div>
+</div> 

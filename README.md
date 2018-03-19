@@ -12,6 +12,10 @@ As this is written using .NET Core 2, you can deploy it on Windows or Linux.
 
 Most likely you will want to deploy on Linux as the hosting is so much cheaper.
 
+## Acknowledgements
+
+I used Armin Reiter's [Feed Reader](https://github.com/codehollow/FeedReader/). Thanks Armin!
+
 ## Prerequisites
 
 * [ASP.NET Core 2](https://docs.microsoft.com/en-us/dotnet/core/linux-prerequisites?tabs=netcore2x) 

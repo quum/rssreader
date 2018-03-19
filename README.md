@@ -42,29 +42,29 @@ RSSReader uses the .NET Core Kestrel webserver. You can't expose that to the Int
 
 You first set up RSSReader as a service, for example using systemd:
 
-`[Unit]
-Description=my RSS reader
-[Service]
-WorkingDirectory=/apps/rssreader
-ExecStart=/usr/bin/dotnet /apps/rssreader/RSSReader.dll --urls "http://+:5001"
-Restart=always
-RestartSec=10
-SyslogIdentifier=dotnet-rssreader
-User=www-data
-Environment=ASPNETCORE_ENVIRONMENT=Production
-[Install]
-WantedBy=multi-user.target`
+`[Unit]`
+`Description=my RSS reader`
+`[Service]`
+`WorkingDirectory=/apps/rssreader`
+`ExecStart=/usr/bin/dotnet /apps/rssreader/RSSReader.dll --urls "http://+:5001"`
+`Restart=always`
+`RestartSec=10`
+`SyslogIdentifier=dotnet-rssreader`
+`User=www-data`
+`Environment=ASPNETCORE_ENVIRONMENT=Production`
+`[Install]`
+`WantedBy=multi-user.target`
 
 Then you have configure a reverse proxy in to point to this app, for example in Apache:
 
-`<VirtualHost *:80>
-ServerName myrss.example.com
-ProxyPreserveHost On
-ProxyPass / http://127.0.0.1:5001/
-ProxyPassReverse / http://127.0.0.1:5001/
-ErrorLog /var/log/apache2/aspnetcoredemo-error.log
-CustomLog /var/log/apache2/aspnetcodedemo-access.log common
-</VirtualHost>`
+`<VirtualHost *:80>`
+`ServerName myrss.example.com`
+`ProxyPreserveHost On`
+`ProxyPass / http://127.0.0.1:5001/`
+`ProxyPassReverse / http://127.0.0.1:5001/`
+`ErrorLog /var/log/apache2/aspnetcoredemo-error.log`
+`CustomLog /var/log/apache2/aspnetcodedemo-access.log common`
+`</VirtualHost>`
 
 
 

@@ -28,7 +28,7 @@ mysql -u root --password=password --execute="create schema rssdb"
 
 dotnet RSSUtil.dll -d rssdb -i nameofopml.xml
 
-(database is specified as schema:user:password:port. user default=root, password default=password, server default=127.0.01, port default = 3306)
+(database is specified as schema:user:password:server:port. user default=root, password default=password, server default=127.0.01, port default = 3306)
 
 ## Scanning for new articles 
 

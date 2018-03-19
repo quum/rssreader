@@ -22,17 +22,23 @@ Most likely you will want to deploy on Linux as the hosting is so much cheaper.
 
 ## Create the database
 
+```
 mysql -u root --password=password --execute="create schema rssdb"
+```
 
 ## Importing OPML
 
+```
 dotnet RSSUtil.dll -d rssdb -i nameofopml.xml
+```
 
 (database is specified as schema:user:password:server:port. user default=root, password default=password, server default=127.0.01, port default = 3306)
 
 ## Scanning for new articles 
 
+```
 dotnet RSSUtil.dll -d rssdb -s
+```
 
 (periodically run from crontab)
 

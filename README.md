@@ -67,7 +67,7 @@ Environment=ASPNETCORE_ENVIRONMENT=Production
 [Install]
 WantedBy=multi-user.target
 ```
-Then you have configure a reverse proxy to point to this app, for example in Apache:
+Then you configure a reverse proxy to point to this app, for example in Apache:
 
 ```
 <VirtualHost *:80>

@@ -28,6 +28,7 @@ I used Armin Reiter's [Feed Reader](https://github.com/codehollow/FeedReader/). 
 
 ```
 mysql -u root --password=password --execute="create schema rssdb"
+mysql -u root --password=password rssdb < ./SQL/rssdb.sql
 ```
 
 ## Importing OPML
